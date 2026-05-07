@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useEffect, useState } from 'react';
-import { FlatList, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Alert, FlatList, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 
 const INITIAL_HABITS = [
   { id: '1', name: 'Gym', emoji: '🏋️', completed: false },
@@ -59,6 +59,17 @@ export default function HomeScreen() {
     setFormVisible(false);
   };
 
+  const deleteHabit = (id: string) => {
+    Alert.alert(
+      'Delete Habit',
+      'Are you sure you want to delete this habit?',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        { text: 'Delete', style: 'destructive', onPress: () => setHabits(habits.filter(h => h.id !== id)) },
+      ]
+    );
+  };
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>My Habits 💪</Text>
@@ -70,6 +81,7 @@ export default function HomeScreen() {
           <TouchableOpacity
             style={[styles.card, item.completed && styles.cardCompleted]}
             onPress={() => toggleHabit(item.id)}
+            onLongPress={() => deleteHabit(item.id)}
           >
             <Text style={styles.emoji}>{item.emoji}</Text>
             <Text style={[styles.name, item.completed && styles.nameCompleted]}>

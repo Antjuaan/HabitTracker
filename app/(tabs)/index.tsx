@@ -1,13 +1,10 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useEffect, useState } from 'react';
 import { Alert, FlatList, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { EMOJI_OPTIONS } from '../../constants/habits';
 import { useTheme } from '../../context/ThemeContext';
+import { loadHabits, saveHabits } from '../../storage/habitStorage';
 import { makeStyles } from '../../styles/homeScreen';
 import { Habit } from '../../types/habit';
-
-const EMOJI_OPTIONS = ['🏋️', '💧', '📚', '🏃', '🧘', '🥗', '😴', '💊', '🎯', '✍️', '🎸', '🧹', '💻', '🚴', '🍎', '🧠'];
-
-const STORAGE_KEY = 'habits';
 
 export default function HomeScreen() {
   const [habits, setHabits] = useState<Habit[]>([]);
@@ -17,29 +14,12 @@ export default function HomeScreen() {
   const { colors, toggleTheme, theme } = useTheme();
   const styles = makeStyles(colors);
 
-  // Load habits from storage on app start
   useEffect(() => {
-    const loadHabits = async () => {
-      try {
-        const stored = await AsyncStorage.getItem(STORAGE_KEY);
-        if (stored) setHabits(JSON.parse(stored));
-      } catch (e) {
-        console.error('Failed to load habits', e);
-      }
-    };
-    loadHabits();
+    loadHabits().then(setHabits);
   }, []);
 
-  // Save habits to storage whenever they change
   useEffect(() => {
-    const saveHabits = async () => {
-      try {
-        await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(habits));
-      } catch (e) {
-        console.error('Failed to save habits', e);
-      }
-    };
-    saveHabits();
+    saveHabits(habits);
   }, [habits]);
 
   const toggleHabit = (id: string) => {
@@ -50,7 +30,7 @@ export default function HomeScreen() {
 
   const addHabit = () => {
     if (!newName.trim()) return;
-    const newHabit = {
+    const newHabit: Habit = {
       id: Date.now().toString(),
       name: newName.trim(),
       emoji: newEmoji.trim() || '⭐',
@@ -75,7 +55,6 @@ export default function HomeScreen() {
 
   return (
     <View style={styles.container}>
-
       <View style={styles.header}>
         <Text style={styles.title}>My Habits 💪</Text>
         <TouchableOpacity onPress={toggleTheme}>

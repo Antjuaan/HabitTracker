@@ -2,18 +2,14 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useEffect, useState } from 'react';
 import { Alert, FlatList, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { styles } from '../../styles/homeScreen';
+import { Habit } from '../../types/habit';
 
-const INITIAL_HABITS = [
-  { id: '1', name: 'Gym', emoji: '🏋️', completed: false },
-  { id: '2', name: 'Drink 2L of water', emoji: '💧', completed: false },
-  { id: '3', name: 'Read 30 min', emoji: '📚', completed: false },
-];
 const EMOJI_OPTIONS = ['🏋️', '💧', '📚', '🏃', '🧘', '🥗', '😴', '💊', '🎯', '✍️', '🎸', '🧹', '💻', '🚴', '🍎', '🧠'];
 
 const STORAGE_KEY = 'habits';
 
 export default function HomeScreen() {
-  const [habits, setHabits] = useState(INITIAL_HABITS);
+  const [habits, setHabits] = useState<Habit[]>([]);
   const [formVisible, setFormVisible] = useState(false);
   const [newName, setNewName] = useState('');
   const [newEmoji, setNewEmoji] = useState('');
@@ -77,6 +73,15 @@ export default function HomeScreen() {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>My Habits 💪</Text>
+
+      {habits.length === 0 && (
+        <View style={styles.emptyState}>
+          <Text style={styles.emptyEmoji}>🌱</Text>
+          <Text style={styles.emptyTitle}>No habits yet</Text>
+          <Text style={styles.emptySubtitle}>Tap the + button to add your first habit and start tracking your daily routine.</Text>
+          <Text style={styles.emptySubtitle}>Long press on a habit to delete it</Text>
+        </View>
+      )}
 
       <FlatList
         data={habits}

@@ -156,4 +156,14 @@ export const makeStyles = (colors: typeof lightColors) => StyleSheet.create({
     justifyContent: 'space-between',
     marginBottom: 26,
   },
+  btnCancel: {
+    borderRadius: 8,
+    padding: 12,
+    alignItems: 'center',
+    marginTop: 8,
+  },
+  btnCancelText: {
+    color: colors.subtitle,
+    fontSize: 16,
+  },
 });

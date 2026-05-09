@@ -11,6 +11,10 @@ export default function HomeScreen() {
   const [formVisible, setFormVisible] = useState(false);
   const [newName, setNewName] = useState('');
   const [newEmoji, setNewEmoji] = useState('');
+  const [editingHabit, setEditingHabit] = useState<Habit | null>(null);
+  const [editName, setEditName] = useState('');
+  const [editEmoji, setEditEmoji] = useState('');
+
   const { colors, toggleTheme, theme } = useTheme();
   const styles = makeStyles(colors);
 
@@ -43,14 +47,38 @@ export default function HomeScreen() {
   };
 
   const deleteHabit = (id: string) => {
+    setHabits(habits.filter(h => h.id !== id));
+  };
+
+  const onLongPress = (habit: Habit) => {
     Alert.alert(
-      'Delete Habit',
-      'Are you sure you want to delete this habit?',
+      habit.name,
+      'What do you want to do?',
       [
         { text: 'Cancel', style: 'cancel' },
-        { text: 'Delete', style: 'destructive', onPress: () => setHabits(habits.filter(h => h.id !== id)) },
+        { text: '✏️ Edit', onPress: () => openEdit(habit) },
+        { text: '🗑️ Delete', style: 'destructive', onPress: () => deleteHabit(habit.id) },
       ]
     );
+  };
+
+  const openEdit = (habit: Habit) => {
+    setEditingHabit(habit);
+    setEditName(habit.name);
+    setEditEmoji(habit.emoji);
+    setFormVisible(false);
+  };
+
+  const confirmEdit = () => {
+    if (!editName.trim() || !editingHabit) return;
+    setHabits(habits.map(h =>
+      h.id === editingHabit.id
+        ? { ...h, name: editName.trim(), emoji: editEmoji || h.emoji }
+        : h
+    ));
+    setEditingHabit(null);
+    setEditName('');
+    setEditEmoji('');
   };
 
   return (
@@ -67,7 +95,7 @@ export default function HomeScreen() {
           <Text style={styles.emptyEmoji}>🌱</Text>
           <Text style={styles.emptyTitle}>No habits yet</Text>
           <Text style={styles.emptySubtitle}>Tap the + button to add your first habit and start tracking your daily routine.</Text>
-          <Text style={styles.emptySubtitle}>Long press on a habit to delete it</Text>
+          <Text style={styles.emptySubtitle}>Long press on a habit to edit or delete it.</Text>
         </View>
       )}
 
@@ -78,7 +106,7 @@ export default function HomeScreen() {
           <TouchableOpacity
             style={[styles.card, item.completed && styles.cardCompleted]}
             onPress={() => toggleHabit(item.id)}
-            onLongPress={() => deleteHabit(item.id)}
+            onLongPress={() => onLongPress(item)}
           >
             <Text style={styles.emoji}>{item.emoji}</Text>
             <Text style={[styles.name, item.completed && styles.nameCompleted]}>
@@ -113,6 +141,41 @@ export default function HomeScreen() {
           </View>
           <TouchableOpacity style={styles.btnConfirm} onPress={addHabit}>
             <Text style={styles.btnConfirmText}>Add</Text>
+          </TouchableOpacity>
+        </View>
+      )}
+
+      {editingHabit && (
+        <View style={styles.form}>
+          <Text style={styles.emojiLabel}>Edit habit</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Habit name..."
+            placeholderTextColor={colors.placeholder}
+            value={editName}
+            onChangeText={setEditName}
+            autoFocus
+          />
+          <Text style={styles.emojiLabel}>Choose an emoji:</Text>
+          <View style={styles.emojiGrid}>
+            {EMOJI_OPTIONS.map(emoji => (
+              <TouchableOpacity
+                key={emoji}
+                style={[styles.emojiOption, editEmoji === emoji && styles.emojiSelected]}
+                onPress={() => setEditEmoji(emoji)}
+              >
+                <Text style={styles.emojiOptionText}>{emoji}</Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+          <TouchableOpacity style={styles.btnConfirm} onPress={confirmEdit}>
+            <Text style={styles.btnConfirmText}>Save</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.btnCancel}
+            onPress={() => setEditingHabit(null)}
+          >
+            <Text style={styles.btnCancelText}>Cancel</Text>
           </TouchableOpacity>
         </View>
       )}

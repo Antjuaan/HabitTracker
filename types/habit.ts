@@ -4,3 +4,9 @@ export type Habit = {
   emoji: string;
   completed: boolean;
 };
+
+export type DailyRecord = {
+  date: string;
+  total: number;
+  completed: number;
+};

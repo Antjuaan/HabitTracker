@@ -1,12 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Alert, FlatList, Text, TextInput, TouchableOpacity, View } from 'react-native';
-import Animated, {
-  useAnimatedStyle,
-  useSharedValue,
-  withDelay,
-  withSequence,
-  withTiming,
-} from 'react-native-reanimated';
+import ConfettiCannon from 'react-native-confetti-cannon';
 import HabitCard from '../../components/HabitCard';
 import { EMOJI_OPTIONS } from '../../constants/habits';
 import { useTheme } from '../../context/ThemeContext';
@@ -22,10 +16,10 @@ export default function HomeScreen() {
   const [editingHabit, setEditingHabit] = useState<Habit | null>(null);
   const [editName, setEditName] = useState('');
   const [editEmoji, setEditEmoji] = useState('');
+  const confettiRef = useRef<any>(null);
 
   const { colors, toggleTheme, theme } = useTheme();
   const styles = makeStyles(colors);
-  const celebrationOpacity = useSharedValue(0);
 
   useEffect(() => {
     loadHabits().then(setHabits);
@@ -38,10 +32,7 @@ export default function HomeScreen() {
   const checkAllCompleted = (updatedHabits: Habit[]) => {
     const allDone = updatedHabits.length > 0 && updatedHabits.every(h => h.completed);
     if (allDone) {
-      celebrationOpacity.value = withSequence(
-        withTiming(1, { duration: 400 }),
-        withDelay(1500, withTiming(0, { duration: 400 }))
-      );
+      confettiRef.current?.start();
     }
   };
 
@@ -102,10 +93,6 @@ export default function HomeScreen() {
     setEditEmoji('');
   };
 
-  const celebrationStyle = useAnimatedStyle(() => ({
-    opacity: celebrationOpacity.value,
-  }));
-
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -137,9 +124,13 @@ export default function HomeScreen() {
         )}
       />
 
-      <Animated.View style={[styles.celebration, celebrationStyle]} pointerEvents="none">
-        <Text style={styles.celebrationText}>🎉 All habits completed!</Text>
-      </Animated.View>
+      <ConfettiCannon
+        ref={confettiRef}
+        count={80}
+        origin={{ x: 200, y: 0 }}
+        autoStart={false}
+        fadeOut={true}
+      />
 
       {formVisible && (
         <View style={styles.form}>

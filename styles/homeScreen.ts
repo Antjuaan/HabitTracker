@@ -167,23 +167,4 @@ export const makeStyles = (colors: typeof lightColors) => StyleSheet.create({
     color: colors.subtitle,
     fontSize: 16,
   },
-  celebration: {
-    position: 'absolute',
-    top: 160,
-    left: 20,
-    right: 20,
-    backgroundColor: '#4CAF50',
-    borderRadius: 16,
-    padding: 16,
-    alignItems: 'center' as const,
-    shadowColor: '#000',
-    shadowOpacity: 0.2,
-    shadowRadius: 8,
-    elevation: 6,
-  },
-  celebrationText: {
-    color: '#fff',
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
 });

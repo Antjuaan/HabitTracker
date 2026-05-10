@@ -97,9 +97,6 @@ export default function HomeScreen() {
     <View style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.title}>My Habits 💪</Text>
-        <TouchableOpacity onPress={toggleTheme}>
-          <Text style={{ fontSize: 24 }}>{theme === 'light' ? '🌙' : '☀️'}</Text>
-        </TouchableOpacity>
       </View>
 
       {habits.length === 0 && (

@@ -16,6 +16,7 @@ export default function HomeScreen() {
   const [editingHabit, setEditingHabit] = useState<Habit | null>(null);
   const [editName, setEditName] = useState('');
   const [editEmoji, setEditEmoji] = useState('');
+  const [confettiVisible, setConfettiVisible] = useState(false);
   const confettiRef = useRef<any>(null);
 
   const { colors, toggleTheme, theme } = useTheme();
@@ -32,7 +33,8 @@ export default function HomeScreen() {
   const checkAllCompleted = (updatedHabits: Habit[]) => {
     const allDone = updatedHabits.length > 0 && updatedHabits.every(h => h.completed);
     if (allDone) {
-      confettiRef.current?.start();
+      setConfettiVisible(true);
+      setTimeout(() => confettiRef.current?.start(), 100);
     }
   };
 
@@ -121,13 +123,15 @@ export default function HomeScreen() {
         )}
       />
 
-      <ConfettiCannon
-        ref={confettiRef}
-        count={80}
-        origin={{ x: 200, y: 0 }}
-        autoStart={false}
-        fadeOut={true}
-      />
+      {confettiVisible && (
+        <ConfettiCannon
+          ref={confettiRef}
+          count={80}
+          origin={{ x: 200, y: 0 }}
+          autoStart={false}
+          fadeOut={true}
+        />
+      )}
 
       {formVisible && (
         <View style={styles.form}>

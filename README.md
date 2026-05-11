@@ -115,7 +115,7 @@ Scan the QR code with Expo Go on your phone or press `i` to open the iOS simulat
 
 ### Option B — Android APK
 
-Download the latest build directly — APK link coming soon.
+Download the latest build directly — [Download here](https://github.com/Antjuaan/DailyDo/releases/download/1.0.0/application-6280117b-97e5-4426-9383-99520de20a54.apk).
 
 Enable "Install from unknown sources" on your Android device, then open the downloaded `.apk` file to install.
 

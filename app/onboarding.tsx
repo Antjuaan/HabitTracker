@@ -79,7 +79,7 @@ export default function OnboardingScreen() {
         {step === 0 && (
           <View style={styles.content}>
             <Text style={styles.emoji}>💪</Text>
-            <Text style={styles.title}>Welcome to{'\n'}Habit Tracker</Text>
+            <Text style={styles.title}>Welcome to{'\n'}DailyDo</Text>
             <Text style={styles.subtitle}>
               Build better habits, one day at a time. Track your daily routines and watch yourself grow.
             </Text>
